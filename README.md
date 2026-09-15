@@ -1,4 +1,4 @@
-# pstack
+# hstack
 
 Agent workflows for understanding a codebase, designing changes, testing fixes, and preparing pull requests. Start with `poteto-mode` to choose a workflow for your task, or invoke a specific skill when you know what you need.
 
@@ -23,7 +23,7 @@ Use interrogate to review my diff for bugs and missing cases.
 Use make-pr-easy-to-review to tidy this PR's history and description.
 ```
 
-On Claude Code, use `/pstack:poteto-mode` or another `/pstack:<skill>` command. On Codex, select the discovered skill, such as `pstack:poteto-mode`, or request it by name. The optional Codex shortcuts described below provide `/poteto-mode`, `/tdd`, and the other short command names.
+On Claude Code, use `/hstack:poteto-mode` or another `/hstack:<skill>` command. On Codex, select the discovered skill, such as `hstack:poteto-mode`, or request it by name. The optional Codex shortcuts described below provide `/poteto-mode`, `/tdd`, and the other short command names.
 
 ## Install
 
@@ -32,23 +32,23 @@ On Claude Code, use `/pstack:poteto-mode` or another `/pstack:<skill>` command. 
 Add the marketplace and install the plugin:
 
 ```shell
-/plugin marketplace add michael-denyer/pstack-claude
-/plugin install pstack@pstack-claude
+/plugin marketplace add HavardPede/hstack
+/plugin install hstack@hstack
 ```
 
 The plugin's `SessionStart` hook loads a short instruction on startup, `/clear`, and after compaction. It directs non-trivial engineering tasks to `poteto-mode`; the full skill loads when invoked. Explicit user instructions take precedence, and dispatched subagents ignore the startup instruction.
 
-To disable automatic routing, delete `hooks/hooks.json` from the installed plugin at `~/.claude/plugins/cache/pstack-claude/pstack/<version>/`. A plugin update restores that file.
+To disable automatic routing, delete `hooks/hooks.json` from the installed plugin at `~/.claude/plugins/cache/hstack/hstack/<version>/`. A plugin update restores that file.
 
 ### Shared skills for Codex, Prime Agent, opencode, and Gemini CLI
 
 The repository's shared installation uses `~/.agents/skills/`. Clone the repository and link each skill:
 
 ```shell
-git clone https://github.com/michael-denyer/pstack-claude
-cd pstack-claude
+git clone https://github.com/HavardPede/hstack
+cd hstack
 mkdir -p ~/.agents/skills
-for s in plugins/pstack/skills/*/; do
+for s in plugins/hstack/skills/*/; do
   ln -s "$PWD/$s" ~/.agents/skills/"$(basename "$s")"
 done
 ```
@@ -60,14 +60,14 @@ The commands leave existing destinations intact. If a name already exists, inspe
 For an installation without maintaining a clone, the repository also supports the `skills` CLI:
 
 ```shell
-npx skills add https://github.com/michael-denyer/pstack-claude/tree/main/plugins/pstack/skills --skill "*" --agent "*" --yes
+npx skills add https://github.com/HavardPede/hstack/tree/main/plugins/hstack/skills --skill "*" --agent "*" --yes
 ```
 
 A skills-only installation includes the skills, their scripts, reference copies of the agents, and license notices. Runtime-specific plugin files are separate: Claude Code's startup hook and native agent registration, and Codex's command shortcuts.
 
 ### Codex setup
 
-After the shared installation, request `pstack:poteto-mode` in your project. The repository records successful skill discovery through these symlinks in a live Codex session.
+After the shared installation, request `hstack:poteto-mode` in your project. The repository records successful skill discovery through these symlinks in a live Codex session.
 
 The port's documented configuration for parallel subagents is:
 
@@ -82,14 +82,14 @@ For optional slash-command shortcuts, run this from the repository root:
 
 ```shell
 mkdir -p ~/.codex/prompts
-for c in plugins/pstack/.codex-plugin/prompts/*.md; do
+for c in plugins/hstack/.codex-plugin/prompts/*.md; do
   ln -s "$PWD/$c" ~/.codex/prompts/"$(basename "$c")"
 done
 ```
 
 Each shortcut invokes its corresponding skill. Remove a shortcut by deleting its link at `~/.codex/prompts/<name>.md`. The repository also contains a Codex marketplace manifest at `.agents/plugins/marketplace.json`; the symlink installation is the path recorded as verified here.
 
-The shared skill bodies retain Claude tool and model names. The [Codex mapping](plugins/pstack/skills/poteto-mode/references/codex-tools.md) explains their Codex equivalents, including agent dispatch, model selection, and project verification. For automatic routing on Codex, add a standing instruction to use `poteto-mode` in your `AGENTS.md`.
+The shared skill bodies retain Claude tool and model names. The [Codex mapping](plugins/hstack/skills/poteto-mode/references/codex-tools.md) explains their Codex equivalents, including agent dispatch, model selection, and project verification. For automatic routing on Codex, add a standing instruction to use `poteto-mode` in your `AGENTS.md`.
 
 ### Other runtimes
 
@@ -105,7 +105,7 @@ These verification notes describe prior checks, not a guarantee that every workf
 
 ## Configure models and dependencies
 
-Use `setup-pstack` to choose models for each role. Defaults live in [models.json](plugins/pstack/models.json). The Claude Code override sheet is `~/.claude/pstack-models.md`; on Codex it is `~/.codex/pstack-models.md`, whose contents belong in `~/.codex/AGENTS.md`. Use distinct available models for panels that compare independent designs or reviews.
+Use `setup-hstack` to choose models for each role. Defaults live in [models.json](plugins/hstack/models.json). The Claude Code override sheet is `~/.claude/hstack-models.md`; on Codex it is `~/.codex/hstack-models.md`, whose contents belong in `~/.codex/AGENTS.md`. Use distinct available models for panels that compare independent designs or reviews.
 
 Install dependencies for the workflows you plan to use:
 
@@ -124,15 +124,15 @@ To install the Claude Code skill-authoring companion:
 /plugin install plugin-dev@claude-plugins-official
 ```
 
-Without it, skill-authoring routes lose their companion guidance. Other workflows remain available. On Codex, use the skill-authoring equivalent described in the [Codex mapping](plugins/pstack/skills/poteto-mode/references/codex-tools.md).
+Without it, skill-authoring routes lose their companion guidance. Other workflows remain available. On Codex, use the skill-authoring equivalent described in the [Codex mapping](plugins/hstack/skills/poteto-mode/references/codex-tools.md).
 
-Playbooks use the runtime's task-tracking tools, with an uncommitted `todo.md` fallback. For Claude Code task tools, the repository documents `CLAUDE_CODE_ENABLE_TODO_TOOLS=1`; see [poteto-mode's platform adaptation](plugins/pstack/skills/poteto-mode/SKILL.md#platform-adaptation).
+Playbooks use the runtime's task-tracking tools, with an uncommitted `todo.md` fallback. For Claude Code task tools, the repository documents `CLAUDE_CODE_ENABLE_TODO_TOOLS=1`; see [poteto-mode's platform adaptation](plugins/hstack/skills/poteto-mode/SKILL.md#platform-adaptation).
 
-App verification follows the [driver policy](plugins/pstack/skills/poteto-mode/SKILL.md#non-negotiables). Use `create-verification-skill` to record how to drive and verify your project.
+App verification follows the [driver policy](plugins/hstack/skills/poteto-mode/SKILL.md#non-negotiables). Use `create-verification-skill` to record how to drive and verify your project.
 
 ## Slash commands
 
-The table uses short skill names. Claude Code exposes them as `/pstack:<name>`; Codex's optional prompt links provide `/name`. Other runtimes can invoke skills by name.
+The table uses short skill names. Claude Code exposes them as `/hstack:<name>`; Codex's optional prompt links provide `/name`. Other runtimes can invoke skills by name.
 
 | command | use it when |
 | --- | --- |
@@ -154,7 +154,7 @@ The table uses short skill names. Claude Code exposes them as `/pstack:<name>`; 
 | `/show-me-your-work` | log decisions to a reviewable tsv decision trail |
 | `/blast-radius` | find what a change could break beyond the diff and prove safety by running code |
 | `/recall` | catch up on recent working context from chat history, live state, and the shared record |
-| `/setup-pstack` | configure pstack per-role model choices |
+| `/setup-hstack` | configure hstack per-role model choices |
 | `/unslop` | clean up writing by removing AI tells |
 | `/no-comments` | strip comments before review, fix the accepted findings, encode claimed constraints |
 | `/create-verification-skill` | generate a project-local verification skill and feature map |
@@ -188,7 +188,7 @@ Multi-model review depends on the models your runtime can reach. The default Cla
 ```text
 .claude-plugin/marketplace.json    Claude Code marketplace
 .agents/plugins/marketplace.json  Codex marketplace
-plugins/pstack/
+plugins/hstack/
   .claude-plugin/plugin.json      Claude Code plugin manifest
   .codex-plugin/                  Codex manifest and generated prompt stubs
   skills/                        Shared skills, references, and scripts
@@ -198,7 +198,7 @@ tools/                           Generation, validation, and upstream sync
 tests/                           Repository checks
 ```
 
-The skills-only installation boundary is `plugins/pstack/skills/`. Reference copies of the agents and license files live under `poteto-mode/references/` so they travel with skills-only installations. CI installs that tree through the `skills` CLI and checks its files against the source.
+The skills-only installation boundary is `plugins/hstack/skills/`. Reference copies of the agents and license files live under `poteto-mode/references/` so they travel with skills-only installations. CI installs that tree through the `skills` CLI and checks its files against the source.
 
 ## Contributing
 
@@ -215,7 +215,7 @@ The generator stamps versions, model defaults, Codex prompts, and portable refer
 
 CI also checks shell scripts, workflows, Markdown, relative links, and the bundled Bun tools. See [local checks](CONTRIBUTING.md#things-that-will-fail-ci) for commands and [release instructions](CONTRIBUTING.md#releasing) for versioning and the live Claude Code command check.
 
-For a bug report, include the pstack version, runtime and version, and reproduction steps. Use [SECURITY.md](SECURITY.md) for security reports.
+For a bug report, include the hstack version, runtime and version, and reproduction steps. Use [SECURITY.md](SECURITY.md) for security reports.
 
 ## License and attribution
 

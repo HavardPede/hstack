@@ -4,9 +4,9 @@ import { mkdirSync, mkdtempSync, utimesSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { candidates, findTranscript, openingPrompt } from "../plugins/pstack/skills/reflect/scripts/find-transcript.mjs";
+import { candidates, findTranscript, openingPrompt } from "../plugins/hstack/skills/reflect/scripts/find-transcript.mjs";
 
-const script = join(import.meta.dir, "../plugins/pstack/skills/reflect/scripts/find-transcript.mjs");
+const script = join(import.meta.dir, "../plugins/hstack/skills/reflect/scripts/find-transcript.mjs");
 
 const meta = JSON.stringify({ type: "bridge-session", sessionId: "abc" });
 const summary = JSON.stringify({ type: "summary", summary: "earlier work" });

@@ -12,4 +12,4 @@
 .claude/settings.local.json
 
 # bun deps for the vendored poteto-mode scripts (bootstrap.ts installs them on first run)
-plugins/pstack/skills/poteto-mode/scripts/node_modules/
+plugins/hstack/skills/poteto-mode/scripts/node_modules/

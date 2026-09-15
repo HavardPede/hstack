@@ -56,13 +56,13 @@ describe("regions", () => {
   test("every skill in models.json owns exactly one stamped region", () => {
     const skills = new Set(models.roles.map((r) => r.skill));
     for (const skill of skills) {
-      const owned = regions(models).filter((r) => r.file === `plugins/pstack/skills/${skill}/SKILL.md`);
+      const owned = regions(models).filter((r) => r.file === `plugins/hstack/skills/${skill}/SKILL.md`);
       expect(owned).toHaveLength(1);
     }
   });
 
   test("applyRegions stamps in place and is idempotent", () => {
-    const file = "plugins/pstack/skills/how/SKILL.md";
+    const file = "plugins/hstack/skills/how/SKILL.md";
     const text = "# how\n\n## Models\n\nstale\n\n## After\nkeep\n";
     const once = applyRegions(file, text, models);
     expect(once).not.toContain("stale");
@@ -72,33 +72,33 @@ describe("regions", () => {
   });
 
   test("applyRegions throws when an owned file lost its anchor", () => {
-    expect(() => applyRegions("plugins/pstack/skills/how/SKILL.md", "# how\n\nno section\n", models)).toThrow(
-      "plugins/pstack/skills/how/SKILL.md: no anchor for the Models section to stamp",
+    expect(() => applyRegions("plugins/hstack/skills/how/SKILL.md", "# how\n\nno section\n", models)).toThrow(
+      "plugins/hstack/skills/how/SKILL.md: no anchor for the Models section to stamp",
     );
   });
 
   test("applyRegions leaves a file the generator does not own untouched", () => {
     const text = "# other\n\n## Models\n\nprose\n";
-    expect(applyRegions("plugins/pstack/skills/other/SKILL.md", text, models)).toBe(text);
+    expect(applyRegions("plugins/hstack/skills/other/SKILL.md", text, models)).toBe(text);
   });
 });
 
 describe("strayModelSlugs", () => {
   test("a slug inside an owned region is exempt", () => {
-    const file = "plugins/pstack/skills/how/SKILL.md";
+    const file = "plugins/hstack/skills/how/SKILL.md";
     const text = applyRegions(file, "# how\n\n## Models\n\nx\n", models);
     expect(strayModelSlugs(file, text, models)).toEqual([]);
   });
 
   test("a slug under a Models heading in a file the generator does not own is a stray", () => {
     const text = "# other\n\n## Models\n\nUse claude-opus-99 always.\n";
-    expect(strayModelSlugs("plugins/pstack/skills/other/SKILL.md", text, models)).toEqual([
-      "plugins/pstack/skills/other/SKILL.md:5: Use claude-opus-99 always.",
+    expect(strayModelSlugs("plugins/hstack/skills/other/SKILL.md", text, models)).toEqual([
+      "plugins/hstack/skills/other/SKILL.md:5: Use claude-opus-99 always.",
     ]);
   });
 
   test("a slug outside the owned region of an owned file is a stray", () => {
-    const file = "plugins/pstack/skills/how/SKILL.md";
+    const file = "plugins/hstack/skills/how/SKILL.md";
     const text = applyRegions(file, "# how\n\n## Models\n\nx\n\n## Setup\n\nPrefer claude-sonnet-4-6.\n", models);
     const strays = strayModelSlugs(file, text, models);
     expect(strays).toHaveLength(1);
@@ -133,17 +133,17 @@ describe("assertChangesHeading", () => {
 describe("validateCodexMarketplace", () => {
   const manifest = (plugins) => JSON.stringify({ plugins });
   test("needs one entry whose name matches and whose path exists", () => {
-    const ok = { name: "pstack", source: { path: "./plugins/pstack" } };
+    const ok = { name: "hstack", source: { path: "./plugins/hstack" } };
     expect(() =>
-      validateCodexMarketplace(manifest([ok]), { expectedName: "pstack", pathExists: () => true }),
+      validateCodexMarketplace(manifest([ok]), { expectedName: "hstack", pathExists: () => true }),
     ).not.toThrow();
-    expect(() => validateCodexMarketplace(manifest([]), { expectedName: "pstack", pathExists: () => true })).toThrow(
+    expect(() => validateCodexMarketplace(manifest([]), { expectedName: "hstack", pathExists: () => true })).toThrow(
       "expected 1 plugin entry, found 0",
     );
     expect(() =>
-      validateCodexMarketplace(manifest([{ ...ok, name: "other" }]), { expectedName: "pstack", pathExists: () => true }),
-    ).toThrow('plugin name "other" != Codex manifest name "pstack"');
-    expect(() => validateCodexMarketplace(manifest([ok]), { expectedName: "pstack", pathExists: () => false })).toThrow(
+      validateCodexMarketplace(manifest([{ ...ok, name: "other" }]), { expectedName: "hstack", pathExists: () => true }),
+    ).toThrow('plugin name "other" != Codex manifest name "hstack"');
+    expect(() => validateCodexMarketplace(manifest([ok]), { expectedName: "hstack", pathExists: () => false })).toThrow(
       "does not resolve to a directory",
     );
   });
@@ -208,7 +208,7 @@ describe("readmeCommands", () => {
 
   test("the live README names exactly the public skills", () => {
     const text = readFileSync(join(repoRoot, "README.md"), "utf8");
-    const rows = readmeCommands(text, publicSkills(join(repoRoot, "plugins/pstack/skills")));
+    const rows = readmeCommands(text, publicSkills(join(repoRoot, "plugins/hstack/skills")));
     expect(rows[0].name).toBe("poteto-mode");
     for (const row of rows) expect(promptStub(row)).toContain(`description: ${row.menu}\n`);
   });
@@ -218,35 +218,35 @@ describe("deriveSkill", () => {
   const front = (flags) => `---\nname: x\ndescription: d\n${flags}---\n\nbody\n`;
 
   test("drops disable-model-invocation on a public skill and swaps it on a principle leaf", () => {
-    expect(deriveSkill("plugins/pstack/skills/tdd/SKILL.md", front("disable-model-invocation: true\n"), models)).toBe(
+    expect(deriveSkill("plugins/hstack/skills/tdd/SKILL.md", front("disable-model-invocation: true\n"), models)).toBe(
       front(""),
     );
     expect(
-      deriveSkill("plugins/pstack/skills/principle-x/SKILL.md", front("disable-model-invocation: true\n"), models),
+      deriveSkill("plugins/hstack/skills/principle-x/SKILL.md", front("disable-model-invocation: true\n"), models),
     ).toBe(front("user-invocable: false\n"));
   });
 
   test("leaves a prose mention of the flag alone", () => {
     const text = front("") + "Never write `disable-model-invocation: true` on a skill.\n";
-    expect(deriveSkill("plugins/pstack/skills/automate-me/SKILL.md", text, models)).toBe(text);
+    expect(deriveSkill("plugins/hstack/skills/automate-me/SKILL.md", text, models)).toBe(text);
   });
 
   test("appends and stamps a Models section when upstream has none", () => {
-    const out = deriveSkill("plugins/pstack/skills/how/SKILL.md", front("disable-model-invocation: true\n"), models);
+    const out = deriveSkill("plugins/hstack/skills/how/SKILL.md", front("disable-model-invocation: true\n"), models);
     expect(out.endsWith("body\n\n## Models\n\nRole defaults, stamped from")).toBe(false);
     expect(out).toContain("body\n\n## Models\n\nRole defaults, stamped from");
     expect(out).toContain("- how explorer:");
     expect(out.endsWith("\n")).toBe(true);
-    expect(deriveSkill("plugins/pstack/skills/how/SKILL.md", out, models)).toBe(out);
+    expect(deriveSkill("plugins/hstack/skills/how/SKILL.md", out, models)).toBe(out);
   });
 
   test("leaves a region whose anchor upstream lacks unstamped instead of throwing", () => {
     const text = front("disable-model-invocation: true\n") + "no reviewer table here\n";
-    expect(deriveSkill("plugins/pstack/skills/interrogate/SKILL.md", text, models)).toBe(front("") + "no reviewer table here\n");
+    expect(deriveSkill("plugins/hstack/skills/interrogate/SKILL.md", text, models)).toBe(front("") + "no reviewer table here\n");
   });
 
   test("a file the generator does not own passes through", () => {
     const text = "# plain\n\nreference text\n";
-    expect(deriveSkill("plugins/pstack/skills/how/references/x.md", text, models)).toBe(text);
+    expect(deriveSkill("plugins/hstack/skills/how/references/x.md", text, models)).toBe(text);
   });
 });

@@ -11,8 +11,8 @@ import { loadModels, resolveModels, section } from "../tools/generate.mjs";
 import { markdownFiles } from "../tools/validate-skills.mjs";
 
 const repoRoot = fileURLToPath(new URL("..", import.meta.url));
-const skillsDir = join(repoRoot, "plugins/pstack/skills");
-const raw = JSON.parse(readFileSync(join(repoRoot, "plugins/pstack/models.json"), "utf8"));
+const skillsDir = join(repoRoot, "plugins/hstack/skills");
+const raw = JSON.parse(readFileSync(join(repoRoot, "plugins/hstack/models.json"), "utf8"));
 const models = loadModels();
 const available = new Set(models.available.map((m) => m.slug));
 
@@ -46,7 +46,7 @@ describe("models.json shape", () => {
   });
 
   test("the file stays one row per entry so a role change is a one-line diff", () => {
-    const text = readFileSync(join(repoRoot, "plugins/pstack/models.json"), "utf8");
+    const text = readFileSync(join(repoRoot, "plugins/hstack/models.json"), "utf8");
     const rows = raw.available.length + raw.roles.length;
     expect(text.split("\n").length).toBeLessThan(rows * 2);
     expect(text.match(/^\s*\{ "/gm)).toHaveLength(rows);

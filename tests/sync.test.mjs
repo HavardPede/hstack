@@ -40,7 +40,7 @@ describe("applySubstitutions", () => {
       RULES.substitutions,
     );
     expect(text).toBe(
-      "Use `arena runners` from `~/.claude/pstack-models.md` when present. Rules in CLAUDE.md imports apply.",
+      "Use `arena runners` from `~/.claude/hstack-models.md` when present. Rules in CLAUDE.md imports apply.",
     );
   });
 
@@ -125,7 +125,7 @@ describe("mergeFile", () => {
 
 describe("syncComponent", () => {
   test("installed plugin text passes sync validation without changes", () => {
-    const plugin = join(import.meta.dir, "../plugins/pstack");
+    const plugin = join(import.meta.dir, "../plugins/hstack");
     const report = sync({ oldDir: plugin, newDir: plugin, localDir: plugin, dryRun: true });
     expect(report.written).toEqual([]);
     expect(report.hits).toEqual([]);

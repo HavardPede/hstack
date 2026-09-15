@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os';
 
 const auditScript = join(
   process.cwd(),
-  'plugins/pstack/skills/poteto-mode/scripts/worktree-audit.sh',
+  'plugins/hstack/skills/poteto-mode/scripts/worktree-audit.sh',
 );
 const fixtures = [];
 afterEach(() => {

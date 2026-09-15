@@ -42,7 +42,7 @@ describe("static plugin invariants", () => {
 
   test("a commands/ directory fails", () => {
     const root = plugin((r) => mkdirSync(join(r, "commands"), { recursive: true }));
-    expect(() => check(root)).toThrow("plugins/pstack/commands/ exists");
+    expect(() => check(root)).toThrow("plugins/hstack/commands/ exists");
   });
 
   test("disable-model-invocation on a skill fails and names the file", () => {
@@ -66,14 +66,14 @@ describe("static plugin invariants", () => {
       skill(r, "caller", "", 'Spawn with `subagent_type: "poteto-agent"`.\n');
     });
     expect(() => check(root)).toThrow(
-      'skills/caller/SKILL.md:6: subagent_type: "poteto-agent" (use "pstack:poteto-agent")',
+      'skills/caller/SKILL.md:6: subagent_type: "poteto-agent" (use "hstack:poteto-agent")',
     );
   });
 
   test("a skill dispatching a plugin agent by its namespaced name passes", () => {
     const root = plugin((r) => {
       agent(r, "poteto-agent");
-      skill(r, "caller", "", 'Spawn with `subagent_type: "pstack:poteto-agent"`.\n');
+      skill(r, "caller", "", 'Spawn with `subagent_type: "hstack:poteto-agent"`.\n');
     });
     expect(() => check(root)).not.toThrow();
   });

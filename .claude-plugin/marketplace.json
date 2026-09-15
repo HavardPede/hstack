@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "hstack",
-      "source": "./plugins/pstack",
+      "source": "./plugins/hstack",
       "description": "A Claude Code fork of poteto's pstack. Rigorous agent workflows for writing less, higher-quality code.",
       "version": "0.9.30"
     }

@@ -4,14 +4,14 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const mode = join(import.meta.dir, "../plugins/pstack/skills/poteto-mode");
+const mode = join(import.meta.dir, "../plugins/hstack/skills/poteto-mode");
 const playbook = readFileSync(join(mode, "playbooks/multi-phase-plan.md"), "utf8");
 const template = playbook.match(/^````markdown\n([\s\S]*?)^````$/m);
 if (!template) throw new Error("Multi-phase playbook has no plan skeleton");
 const skeleton = template[1];
 
 function run(plan) {
-  const dir = mkdtempSync(join(tmpdir(), "pstack-check-plan-"));
+  const dir = mkdtempSync(join(tmpdir(), "hstack-check-plan-"));
   try {
     const file = join(dir, "plan.md");
     writeFileSync(file, plan);

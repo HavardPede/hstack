@@ -2,7 +2,7 @@
   "substitutions": [
     {
       "pattern": "~/.cursor/rules/pstack-models.mdc",
-      "replacement": "~/.claude/pstack-models.md",
+      "replacement": "~/.claude/hstack-models.md",
       "rationale": "the per-role override sheet; must precede the generic .cursor/rules/ rule or that rule mangles the path"
     },
     {

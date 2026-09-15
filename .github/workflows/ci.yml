@@ -47,17 +47,17 @@ jobs:
       # generated job already validated the source tree's links and prose.
       - name: Install the skills tree with the skills CLI
         run: |
-          npx --yes skills@1.5.23 add "$PWD/plugins/pstack/skills" \
+          npx --yes skills@1.5.23 add "$PWD/plugins/hstack/skills" \
             --skill '*' --agent codex --yes --copy
       - name: Compare the installed skills tree with the source
-        run: diff -qr plugins/pstack/skills .agents/skills
+        run: diff -qr plugins/hstack/skills .agents/skills
 
   scripts:
     name: Vendored bun tooling
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: plugins/pstack/skills/poteto-mode/scripts
+        working-directory: plugins/hstack/skills/poteto-mode/scripts
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

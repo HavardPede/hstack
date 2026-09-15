@@ -11,16 +11,16 @@
 //   Skills boundary consumed natively by Codex, Prime, opencode, and Gemini CLI
 //   README.md's "Slash commands" table (one row per public skill, in editorial
 //   order; the row text is the Codex slash-menu one-liner)
-//     -> its Codex prompt stub in plugins/pstack/.codex-plugin/prompts/
+//     -> its Codex prompt stub in plugins/hstack/.codex-plugin/prompts/
 //   The row set must equal the public skills (every Agent Skill not marked
 //   user-invocable: false); a skill without a row or a row without a skill
 //   fails by name.
-//   plugins/pstack/models.json (the model policy: role defaults, diverse panel,
+//   plugins/hstack/models.json (the model policy: role defaults, diverse panel,
 //   available slugs, Codex equivalents)
 //     -> each model-consuming skill's "## Models" section
-//     -> setup-pstack's override-sheet block and interrogate's reviewer table
+//     -> setup-hstack's override-sheet block and interrogate's reviewer table
 //     -> the "## Model names" section of poteto-mode/references/codex-tools.md
-//   plugins/pstack/agents/{poteto-agent,comment-sicko}.md, LICENSE,
+//   plugins/hstack/agents/{poteto-agent,comment-sicko}.md, LICENSE,
 //   LICENSE-cursor-team-kit, and NOTICE-skills.md
 //     -> portable copies under poteto-mode/references/{agents,licenses}/
 //   No other claude-* slug may appear in skill prose; the scan below fails on strays.
@@ -50,17 +50,17 @@ const repo = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const VERSIONED_MANIFESTS = [
   ".claude-plugin/marketplace.json",
-  "plugins/pstack/.claude-plugin/plugin.json",
-  "plugins/pstack/.codex-plugin/plugin.json",
+  "plugins/hstack/.claude-plugin/plugin.json",
+  "plugins/hstack/.codex-plugin/plugin.json",
 ];
 
 export const PORTABLE_ASSETS = [
   {
-    source: "plugins/pstack/agents/poteto-agent.md",
+    source: "plugins/hstack/agents/poteto-agent.md",
     target: "poteto-mode/references/agents/poteto-agent.md",
   },
   {
-    source: "plugins/pstack/agents/comment-sicko.md",
+    source: "plugins/hstack/agents/comment-sicko.md",
     target: "poteto-mode/references/agents/comment-sicko.md",
   },
   { source: "LICENSE", target: "poteto-mode/references/licenses/LICENSE" },
@@ -232,7 +232,7 @@ export function validatePluginLayout(pluginRoot) {
   // same-named skill shows twice. The Codex trampolines live in
   // .codex-plugin/prompts/, which only Codex reads.
   if (existsSync(join(pluginRoot, "commands"))) {
-    throw new Error("plugins/pstack/commands/ exists; trampolines belong in .codex-plugin/prompts/ (CHANGES 0.9.13)");
+    throw new Error("plugins/hstack/commands/ exists; trampolines belong in .codex-plugin/prompts/ (CHANGES 0.9.13)");
   }
   // #58: a plugin's agents register under the plugin namespace, so a dispatch
   // of the bare name errors at runtime with "Agent type 'x' not found".
@@ -245,7 +245,7 @@ export function validatePluginLayout(pluginRoot) {
     readFileSync(file, "utf8").split("\n").forEach((line, i) => {
       for (const name of agents) {
         if (line.includes(`subagent_type: "${name}"`)) {
-          problems.push(`${relative(pluginRoot, file)}:${i + 1}: subagent_type: "${name}" (use "pstack:${name}")`);
+          problems.push(`${relative(pluginRoot, file)}:${i + 1}: subagent_type: "${name}" (use "hstack:${name}")`);
         }
       }
     });
@@ -345,7 +345,7 @@ const blankPadded = (body) => ["", ...body.split("\n"), ""];
 // find it, and what it renders from the model policy. Adding a stamped region
 // means adding a row here; the stray-slug scan exempts exactly these spans.
 export function regions(models) {
-  const skillFile = (skill) => `plugins/pstack/skills/${skill}/SKILL.md`;
+  const skillFile = (skill) => `plugins/hstack/skills/${skill}/SKILL.md`;
   const rolesBySkill = new Map();
   for (const r of models.roles) {
     if (!rolesBySkill.has(r.skill)) rolesBySkill.set(r.skill, []);
@@ -369,19 +369,19 @@ export function regions(models) {
       render: () => reviewers.map((m, i) => `| Reviewer ${String.fromCharCode(65 + i)} | ${code(m)} |`),
     },
     {
-      file: skillFile("setup-pstack"),
+      file: skillFile("setup-hstack"),
       name: "Models section",
       locate: section("Models"),
       render: () => blankPadded(setupModelsSection(models)),
     },
     {
-      file: skillFile("setup-pstack"),
+      file: skillFile("setup-hstack"),
       name: "override sheet",
       locate: fenceUnder("### 5. Write the override sheet", "markdown"),
       render: () => [overrideSheetBlock(models)],
     },
     {
-      file: "plugins/pstack/skills/poteto-mode/references/codex-tools.md",
+      file: "plugins/hstack/skills/poteto-mode/references/codex-tools.md",
       name: "Model names section",
       locate: section("Model names"),
       render: () => blankPadded(codexModelNamesSection(models)),
@@ -415,7 +415,7 @@ export function resolveModels(models) {
 }
 
 export function loadModels() {
-  return resolveModels(JSON.parse(readFileSync(join(repo, "plugins/pstack/models.json"), "utf8")));
+  return resolveModels(JSON.parse(readFileSync(join(repo, "plugins/hstack/models.json"), "utf8")));
 }
 
 // The port's derivation of an upstream file, as tools/sync.mjs applies it
@@ -429,7 +429,7 @@ export function loadModels() {
 // aborting the sync.
 export function deriveSkill(file, text, models = loadModels()) {
   let out = text;
-  const skill = file.match(/^plugins\/pstack\/skills\/([^/]+)\/SKILL\.md$/)?.[1];
+  const skill = file.match(/^plugins\/hstack\/skills\/([^/]+)\/SKILL\.md$/)?.[1];
   if (skill) {
     const swap = skill.startsWith("principle-") ? "\nuser-invocable: false\n" : "\n";
     out = out.replace("\ndisable-model-invocation: true\n", swap);
@@ -446,8 +446,8 @@ export function deriveSkill(file, text, models = loadModels()) {
 export function modelsSection(roles) {
   const bullets = roles.map((r) => `- ${r.role}: ${codeList(r.models)}`).join("\n");
   return (
-    "Role defaults, stamped from `plugins/pstack/models.json` (edit there, rerun `tools/generate.mjs`). " +
-    "A matching role line in `~/.claude/pstack-models.md` overrides each at runtime; see `/setup-pstack`.\n\n" +
+    "Role defaults, stamped from `plugins/hstack/models.json` (edit there, rerun `tools/generate.mjs`). " +
+    "A matching role line in `~/.claude/hstack-models.md` overrides each at runtime; see `/setup-hstack`.\n\n" +
     bullets
   );
 }
@@ -455,7 +455,7 @@ export function modelsSection(roles) {
 export function setupModelsSection(models) {
   const avail = models.available.map((m) => `${m.label} (${code(m.slug)})`).join(", ");
   return (
-    "Stamped from `plugins/pstack/models.json` (edit there, rerun `tools/generate.mjs`).\n\n" +
+    "Stamped from `plugins/hstack/models.json` (edit there, rerun `tools/generate.mjs`).\n\n" +
     `- Available Claude models: ${avail}\n` +
     `- Default panel: ${codeList(models.panel)}\n` +
     `- Single-role default: ${code(models.singleRoleDefault)}`
@@ -467,8 +467,8 @@ export function setupModelsSection(models) {
 export function overrideSheetBlock(models) {
   const rows = models.roles.map((r) => `${r.role}: ${r.models.join(", ")}`).join("\n");
   return (
-    "# pstack model configuration\n\n" +
-    "Per-role model overrides for pstack skills. Each pstack SKILL.md names its defaults in a Models section; " +
+    "# hstack model configuration\n\n" +
+    "Per-role model overrides for hstack skills. Each hstack SKILL.md names its defaults in a Models section; " +
     "the values here override those defaults. Delete a line to fall back to the skill default. " +
     "A value of `inherit-parent` or `auto` runs that role on the parent session's model (the `Agent` call omits `model`); " +
     "an alias entry in a panel list still counts toward that panel's fan-out.\n\n" +
@@ -491,7 +491,7 @@ export function codexModelNamesSection(models) {
     "signal comes from model diversity, so use the distinct Codex models available to you. A good default quad " +
     `on ChatGPT is ${codeList(models.codex.panelQuad)}. If only one model family is reachable, vary reasoning ` +
     "effort and note in the verdict that diversity was reduced.\n\n" +
-    "`/setup-pstack` writes the configured model list. On Codex, set it to your Codex model slugs."
+    "`/setup-hstack` writes the configured model list. On Codex, set it to your Codex model slugs."
   );
 }
 
@@ -564,7 +564,7 @@ function main() {
   }
 
   const models = loadModels();
-  const skillsDir = join(repo, "plugins/pstack/skills");
+  const skillsDir = join(repo, "plugins/hstack/skills");
 
   let modelStamps = 0;
   for (const file of new Set(regions(models).map((r) => r.file))) {
@@ -588,7 +588,7 @@ function main() {
   const skills = readmeCommands(readFileSync(readmePath, "utf8"), publicSkills(skillsDir));
   console.log(`ok: README slash-command table names the ${skills.length} public skills`);
 
-  const promptsDir = join(repo, "plugins/pstack/.codex-plugin/prompts");
+  const promptsDir = join(repo, "plugins/hstack/.codex-plugin/prompts");
   let promptsChanged = 0;
   for (const skill of skills) {
     if (stampFile(join(promptsDir, `${skill.name}.md`), promptStub(skill), `.codex-plugin/prompts/${skill.name}.md`)) {
@@ -613,7 +613,7 @@ function main() {
   console.log("ok: no skill prose points at a path outside the skills tree");
 
   const codexName = JSON.parse(
-    readFileSync(join(repo, "plugins/pstack/.codex-plugin/plugin.json"), "utf8"),
+    readFileSync(join(repo, "plugins/hstack/.codex-plugin/plugin.json"), "utf8"),
   ).name;
   validateCodexMarketplace(readFileSync(join(repo, ".agents/plugins/marketplace.json"), "utf8"), {
     expectedName: codexName,
@@ -621,7 +621,7 @@ function main() {
   });
   console.log("ok: .agents/plugins/marketplace.json names the plugin and points at a real path");
 
-  const pluginRoot = join(repo, "plugins/pstack");
+  const pluginRoot = join(repo, "plugins/hstack");
   validatePluginLayout(pluginRoot);
   console.log("ok: no commands/ directory; plugin agents dispatched by namespaced name");
   validateHooks(readFileSync(join(pluginRoot, "hooks/hooks.json"), "utf8"), {

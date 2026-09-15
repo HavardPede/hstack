@@ -66,7 +66,7 @@ const BINARY = /\.(png|jpe?g|gif|webp|ico|woff2?|lock)$/;
 // status is that many hunks. A negative status or a missing git is an error,
 // not a conflict, and rethrows.
 export function mergeFile(ours, base, theirs) {
-  const scratch = mkdtempSync(join(tmpdir(), "pstack-merge-"));
+  const scratch = mkdtempSync(join(tmpdir(), "hstack-merge-"));
   try {
     const paths = { ours, base, theirs };
     for (const [name, buffer] of Object.entries(paths)) writeFileSync(join(scratch, name), buffer);
@@ -222,7 +222,7 @@ function main() {
   }
   const { substitutions, denylist } = JSON.parse(readFileSync(join(repo, "tools/substitutions.json"), "utf8"));
 
-  const scratch = mkdtempSync(join(tmpdir(), "pstack-sync-"));
+  const scratch = mkdtempSync(join(tmpdir(), "hstack-sync-"));
   try {
     console.log(`cloning ${upstream.remote} ...`);
     git(["clone", "--filter=blob:none", upstream.remote, join(scratch, "clone")]);

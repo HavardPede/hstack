@@ -8,7 +8,7 @@
       "name": "hstack",
       "source": {
         "source": "local",
-        "path": "./plugins/pstack"
+        "path": "./plugins/hstack"
       },
       "policy": {
         "installation": "AVAILABLE",

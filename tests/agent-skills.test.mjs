@@ -22,8 +22,8 @@ import {
 import { validateProsePaths, validateSkillsTree, walk } from "../tools/validate-skills.mjs";
 
 const repoRoot = fileURLToPath(new URL("..", import.meta.url));
-const skillsDir = join(repoRoot, "plugins/pstack/skills");
-const agentsDir = join(repoRoot, "plugins/pstack/agents");
+const skillsDir = join(repoRoot, "plugins/hstack/skills");
+const agentsDir = join(repoRoot, "plugins/hstack/agents");
 const requiredPortableFiles = [
   "poteto-mode/references/agents/comment-sicko.md",
   "poteto-mode/references/agents/poteto-agent.md",
@@ -60,7 +60,7 @@ describe("shared Agent Skills tree", () => {
   });
 
   test("prose naming a real plugin file outside the skills tree fails the boundary check", () => {
-    const plugin = mkdtempSync(join(tmpdir(), "pstack-prose-paths-"));
+    const plugin = mkdtempSync(join(tmpdir(), "hstack-prose-paths-"));
     const root = join(plugin, "skills");
     try {
       mkdirSync(join(plugin, "agents"), { recursive: true });
@@ -82,7 +82,7 @@ describe("shared Agent Skills tree", () => {
   });
 
   test("prose paths that resolve inside the tree or to nothing are left alone", () => {
-    const plugin = mkdtempSync(join(tmpdir(), "pstack-prose-allowed-"));
+    const plugin = mkdtempSync(join(tmpdir(), "hstack-prose-allowed-"));
     const root = join(plugin, "skills");
     try {
       mkdirSync(join(plugin, "hooks"), { recursive: true });
@@ -95,8 +95,8 @@ describe("shared Agent Skills tree", () => {
           "# Reference",
           "",
           "Read `../playbooks/babysit.md` first.",
-          "Write the log to `/tmp/<slug>-resume.md` and run `/setup-pstack`.",
-          "Edit `plugins/pstack/models.json`, then rerun `tools/generate.mjs`.",
+          "Write the log to `/tmp/<slug>-resume.md` and run `/setup-hstack`.",
+          "Edit `plugins/hstack/models.json`, then rerun `tools/generate.mjs`.",
           "Cursor keeps rules in `.cursor/rules/`; Claude Code has no `hooks/nope.md`.",
         ].join("\n"),
       );
@@ -107,7 +107,7 @@ describe("shared Agent Skills tree", () => {
   });
 
   test("walk returns a sorted listing regardless of directory order", () => {
-    const root = mkdtempSync(join(tmpdir(), "pstack-walk-"));
+    const root = mkdtempSync(join(tmpdir(), "hstack-walk-"));
     try {
       for (const name of ["zeta", "alpha", "mid"]) {
         mkdirSync(join(root, name));
@@ -124,7 +124,7 @@ describe("shared Agent Skills tree", () => {
   });
 
   test("an installed node_modules under a skill is not validated", () => {
-    const root = mkdtempSync(join(tmpdir(), "pstack-skills-links-"));
+    const root = mkdtempSync(join(tmpdir(), "hstack-skills-links-"));
     const vendored = join(root, "example/scripts/node_modules/dep");
     mkdirSync(vendored, { recursive: true });
     writeFileSync(join(root, "example/SKILL.md"), "# Example\n");
@@ -139,7 +139,7 @@ describe("shared Agent Skills tree", () => {
   });
 
   test("a bare missing markdown target fails the boundary check", () => {
-    const root = mkdtempSync(join(tmpdir(), "pstack-skills-links-"));
+    const root = mkdtempSync(join(tmpdir(), "hstack-skills-links-"));
     const skill = join(root, "example");
     mkdirSync(skill);
     writeFileSync(
@@ -155,7 +155,7 @@ describe("shared Agent Skills tree", () => {
   });
 
   test("bare, dotted, and reference-style local links resolve inside the boundary", () => {
-    const root = mkdtempSync(join(tmpdir(), "pstack-skills-links-"));
+    const root = mkdtempSync(join(tmpdir(), "hstack-skills-links-"));
     const skill = join(root, "example");
     const references = join(skill, "references");
     mkdirSync(references, { recursive: true });
@@ -180,7 +180,7 @@ describe("shared Agent Skills tree", () => {
   });
 
   test("an escaping markdown target fails the boundary check", () => {
-    const root = mkdtempSync(join(tmpdir(), "pstack-skills-links-"));
+    const root = mkdtempSync(join(tmpdir(), "hstack-skills-links-"));
     const skill = join(root, "example");
     mkdirSync(skill);
     writeFileSync(join(skill, "SKILL.md"), "[escape](../../outside.md)\n");
@@ -195,7 +195,7 @@ describe("shared Agent Skills tree", () => {
   });
 
   test("a markdown symlink target cannot escape the boundary", () => {
-    const parent = mkdtempSync(join(tmpdir(), "pstack-skills-links-"));
+    const parent = mkdtempSync(join(tmpdir(), "hstack-skills-links-"));
     const root = join(parent, "skills");
     const skill = join(root, "example");
     const outside = join(parent, "outside.md");
@@ -234,9 +234,9 @@ describe("shared Agent Skills tree", () => {
   });
 
   test("portable asset sync creates, updates, and removes generated files", () => {
-    const root = mkdtempSync(join(tmpdir(), "pstack-portable-assets-"));
+    const root = mkdtempSync(join(tmpdir(), "hstack-portable-assets-"));
     const fixtureRepo = join(root, "repo");
-    const fixtureSkills = join(fixtureRepo, "plugins/pstack/skills");
+    const fixtureSkills = join(fixtureRepo, "plugins/hstack/skills");
     const generatedDirs = new Set(PORTABLE_ASSETS.map(({ target }) => dirname(target)));
 
     try {
@@ -285,9 +285,9 @@ describe("shared Agent Skills tree", () => {
   });
 
   test("portable asset sync refuses an output directory symlink escape", () => {
-    const root = mkdtempSync(join(tmpdir(), "pstack-portable-assets-"));
+    const root = mkdtempSync(join(tmpdir(), "hstack-portable-assets-"));
     const fixtureRepo = join(root, "repo");
-    const fixtureSkills = join(fixtureRepo, "plugins/pstack/skills");
+    const fixtureSkills = join(fixtureRepo, "plugins/hstack/skills");
     const agentsOutput = join(fixtureSkills, "poteto-mode/references/agents");
     const outside = join(root, "outside");
 
@@ -311,7 +311,7 @@ describe("shared Agent Skills tree", () => {
   });
 
   test("linked skills keep their own resources and sibling principle leaves", () => {
-    const root = mkdtempSync(join(tmpdir(), "pstack-agent-skills-"));
+    const root = mkdtempSync(join(tmpdir(), "hstack-agent-skills-"));
     const installed = join(root, "unrelated-home", ".agents", "skills");
     mkdirSync(installed, { recursive: true });
 
@@ -323,7 +323,7 @@ describe("shared Agent Skills tree", () => {
       const poteto = join(installed, "poteto-mode");
       expect(readFileSync(join(poteto, "SKILL.md"), "utf8")).toContain("# Poteto mode");
       expect(readFileSync(join(poteto, "references", "codex-tools.md"), "utf8")).toContain(
-        "# Codex tool mapping for pstack",
+        "# Codex tool mapping for hstack",
       );
       expect(
         readFileSync(join(poteto, "..", "principle-model-the-domain", "SKILL.md"), "utf8"),
@@ -337,7 +337,7 @@ describe("shared Agent Skills tree", () => {
 describe("Codex model names", () => {
   test("names a strongest Codex model for the roles that default to it on Claude", () => {
     const models = JSON.parse(
-      readFileSync(join(repoRoot, "plugins/pstack/models.json"), "utf8"),
+      readFileSync(join(repoRoot, "plugins/hstack/models.json"), "utf8"),
     );
     const section = codexModelNamesSection(models);
 

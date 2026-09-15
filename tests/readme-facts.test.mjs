@@ -10,11 +10,11 @@ import { agentSkills, publicSkills } from "../tools/generate.mjs";
 
 const repoRoot = fileURLToPath(new URL("..", import.meta.url));
 const readme = readFileSync(join(repoRoot, "README.md"), "utf8");
-const skillsDir = join(repoRoot, "plugins/pstack/skills");
+const skillsDir = join(repoRoot, "plugins/hstack/skills");
 const total = agentSkills(skillsDir).length;
 const publicCount = publicSkills(skillsDir).length;
 const principles = total - publicCount;
-const stubs = readdirSync(join(repoRoot, "plugins/pstack/.codex-plugin/prompts")).filter((f) => f.endsWith(".md")).length;
+const stubs = readdirSync(join(repoRoot, "plugins/hstack/.codex-plugin/prompts")).filter((f) => f.endsWith(".md")).length;
 const pins = JSON.parse(readFileSync(join(repoRoot, "tools/upstream.json"), "utf8")).components;
 
 const numbersBefore = (phrase) => [...readme.matchAll(new RegExp(`(\\d+) (?:${phrase})`, "g"))].map((m) => Number(m[1]));
@@ -45,6 +45,6 @@ describe("README facts match the tree", () => {
   test("the upstream pin named in the opening paragraph is the pinned SHA", () => {
     const named = readme.match(/synced against upstream `([0-9a-f]+)`/)?.[1];
     expect(named).toBeDefined();
-    expect(pins.pstack.sha.startsWith(named)).toBe(true);
+    expect(pins.hstack.sha.startsWith(named)).toBe(true);
   });
 });
