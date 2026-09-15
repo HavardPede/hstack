@@ -1,16 +1,16 @@
 {
-  "name": "pstack-claude",
+  "name": "hstack",
   "owner": {
-    "name": "Michael Denyer",
-    "email": "mdenyer@gmail.com",
-    "url": "https://github.com/michael-denyer"
+    "name": "Håvard Pedersen",
+    "email": "havardpede@gmail.com",
+    "url": "https://github.com/HavardPede"
   },
-  "description": "Claude Code port of poteto's pstack. Rigorous agent workflows with Cursor primitives translated to Claude Code equivalents.",
+  "description": "Personal marketplace for hstack, a Claude Code fork of poteto's pstack.",
   "plugins": [
     {
-      "name": "pstack",
+      "name": "hstack",
       "source": "./plugins/pstack",
-      "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence. Original pstack by Lauren Tan (poteto).",
+      "description": "A Claude Code fork of poteto's pstack. Rigorous agent workflows for writing less, higher-quality code.",
       "version": "0.9.30"
     }
   ]
