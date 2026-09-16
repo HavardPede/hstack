@@ -24,10 +24,6 @@
     "skills",
     "tdd",
     "code-review",
-    "parallel-agents",
-    "codex",
-    "opencode",
-    "gemini-cli",
-    "prime-agent"
+    "parallel-agents"
   ]
 }

@@ -5,8 +5,6 @@ description: Spawn three parallel review subagents over the active transcript, s
 
 # Reflect
 
-On Codex, read the [platform mapping](../poteto-mode/references/codex-tools.md), including its per-skill notes, before following this skill.
-
 Mine the current conversation for durable learnings, then route them into skill edits.
 
 ## When to invoke
@@ -73,7 +71,7 @@ Short list, no preamble:
 
 ## Models
 
-Role defaults, stamped from `plugins/pstack/models.json` (edit there, rerun `tools/generate.mjs`). A matching role line in `~/.claude/pstack-models.md` overrides each at runtime; see `/setup-pstack`.
+Role defaults, kept in sync with `plugins/pstack/models.json` by hand. A matching role line in `~/.claude/pstack-models.md` overrides each at runtime; see `/setup-pstack`.
 
 - reflect tooling: `claude-sonnet-5`
 - reflect judgment, divergent, synthesizer: `claude-opus-5`

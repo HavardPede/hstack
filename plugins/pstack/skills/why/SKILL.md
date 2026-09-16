@@ -5,8 +5,6 @@ description: "Use for 'why does X work this way', 'why we picked Y', design rati
 
 # Why
 
-On Codex, read the [platform mapping](../poteto-mode/references/codex-tools.md), including its per-skill notes, before following this skill.
-
 Investigate the motivation and intent behind code.
 
 Companion to the `how` skill. `how` answers what the code does and how it works. `why` answers what forces led to its shape.
@@ -158,7 +156,7 @@ After the Sources Consulted block, if the user's `why` question is a precursor t
 
 ## Models
 
-Role defaults, stamped from `plugins/pstack/models.json` (edit there, rerun `tools/generate.mjs`). A matching role line in `~/.claude/pstack-models.md` overrides each at runtime; see `/setup-pstack`.
+Role defaults, kept in sync with `plugins/pstack/models.json` by hand. A matching role line in `~/.claude/pstack-models.md` overrides each at runtime; see `/setup-pstack`.
 
 - why investigators: `claude-sonnet-5`
 - why synthesizer: `claude-opus-5`

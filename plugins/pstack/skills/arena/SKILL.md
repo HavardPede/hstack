@@ -5,8 +5,6 @@ description: "Spawn N parallel candidates at the same task, pick a base, graft t
 
 # Arena
 
-On Codex, read the [platform mapping](../poteto-mode/references/codex-tools.md), including its per-skill notes, before following this skill.
-
 Fan out N parallel attempts at the same task. Read every candidate end to end. Pick the strongest as the base. Graft the best ideas from the others into it. Verify the synthesized result.
 
 ## Start
@@ -73,7 +71,7 @@ One synthesized artifact. One short synthesis note alongside, naming the base, t
 
 ## Models
 
-Role defaults, stamped from `plugins/pstack/models.json` (edit there, rerun `tools/generate.mjs`). A matching role line in `~/.claude/pstack-models.md` overrides each at runtime; see `/setup-pstack`.
+Role defaults, kept in sync with `plugins/pstack/models.json` by hand. A matching role line in `~/.claude/pstack-models.md` overrides each at runtime; see `/setup-pstack`.
 
 - arena runners: `claude-opus-5`, `claude-sonnet-5`
 - arena cross-judge pool: `claude-opus-5`, `claude-sonnet-5`

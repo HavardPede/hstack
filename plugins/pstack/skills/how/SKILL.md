@@ -5,8 +5,6 @@ description: "Use for \"how does X work\", code walkthroughs before changing som
 
 # How
 
-On Codex, read the [platform mapping](../poteto-mode/references/codex-tools.md), including its per-skill notes, before following this skill.
-
 Explore the codebase to answer "how does X work?" questions. Produce architectural explanations at the level of a senior engineer onboarding onto a subsystem, enough to build a working mental model, not so much that it reads like annotated source code.
 
 ## Step 1. Assess Complexity
@@ -58,7 +56,7 @@ The explanation uses the sections defined in `references/explainer-prompt.md`, d
 
 ## Models
 
-Role defaults, stamped from `plugins/pstack/models.json` (edit there, rerun `tools/generate.mjs`). A matching role line in `~/.claude/pstack-models.md` overrides each at runtime; see `/setup-pstack`.
+Role defaults, kept in sync with `plugins/pstack/models.json` by hand. A matching role line in `~/.claude/pstack-models.md` overrides each at runtime; see `/setup-pstack`.
 
 - how explorer: `claude-sonnet-5`
 - how explainer: `claude-opus-5`

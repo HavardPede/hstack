@@ -5,8 +5,6 @@ description: "Sketch types, signatures, and module structure before code, then s
 
 # Architect
 
-On Codex, read the [platform mapping](../poteto-mode/references/codex-tools.md), including its per-skill notes, before following this skill.
-
 Design before implementing. Sketch types, function signatures, class shapes, and module boundaries with `not implemented` bodies and pseudocode. Synthesize across multiple model perspectives, then fill in code against the chosen sketch. If implementation proves the sketch wrong, throw it out and redesign.
 
 ## Start
@@ -85,6 +83,6 @@ The caller's usage is written first and the type sketch derived from it. One fil
 
 ## Models
 
-Role defaults, stamped from `plugins/pstack/models.json` (edit there, rerun `tools/generate.mjs`). A matching role line in `~/.claude/pstack-models.md` overrides each at runtime; see `/setup-pstack`.
+Role defaults, kept in sync with `plugins/pstack/models.json` by hand. A matching role line in `~/.claude/pstack-models.md` overrides each at runtime; see `/setup-pstack`.
 
 - architect runners: `claude-opus-5`, `claude-sonnet-5`
